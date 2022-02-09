@@ -1,0 +1,55 @@
+--Project Energy
+
+SELECT *
+	FROM [Energy project]..Energy_Countries
+	ORDER BY Geographic_Location, Year_of_observation;
+
+--Remove rows based on clusters like continents
+
+SELECT *
+	FROM [Energy project]..Energy_Countries
+		WHERE Three_letter_country_codes is NULL
+		ORDER BY Geographic_Location, Year_of_observation;
+
+DELETE
+	FROM [Energy project]..Energy_Countries
+		WHERE Three_letter_country_codes is NULL
+
+-- Check of there are duplicates
+
+SELECT Geographic_location, Year_of_observation, COUNT(*) 
+		FROM [Energy project]..Energy_Countries
+		GROUP BY Geographic_location, Year_of_observation
+			HAVING COUNT(*) > 1;
+
+--Deleting of all year 2020 rows for table Energy_Countries (not for all Counties available)
+
+DELETE
+	FROM [Energy project]..Energy_Countries
+	WHERE Year_of_observation = 2020
+
+--Deleting of 'inf' in Annual_percentage_change_in_primary_energy_consumption in 2 cells because of troubles for POWER QUERY
+
+UPDATE [Energy project]..Energy_Countries
+	SET Annual_percentage_change_in_primary_energy_consumption = 'NULL'
+		WHERE Annual_percentage_change_in_primary_energy_consumption = 'inf'
+
+--Deleting of rows with Year of Observation before 1951
+
+SELECT MIN(Year_of_observation)
+	FROM [Energy project]..Energy_Countries
+
+DELETE
+	FROM [Energy project]..Energy_Countries
+	WHERE Year_of_observation BETWEEN 1900 AND 1950
+
+
+--Change of datatyp Year_of_observation
+
+
+ALTER TABLE [Energy project]..Energy_Countries
+	ALTER COLUMN Year_of_observation nvarchar(255)
+
+ALTER TABLE [Energy project]..Energy_Countries
+	ALTER COLUMN Year_of_observation date
+		
